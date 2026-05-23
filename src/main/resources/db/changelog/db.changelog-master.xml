@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <!-- Lab 5: Database Schema Evolution -->
+
+    <!-- Initial schema baseline -->
+    <include file="migrations/001_initial_schema.sql" relativeToChangelogFile="true"/>
+
+    <!-- Add version column for optimistic locking -->
+    <include file="migrations/002_add_version_column.sql" relativeToChangelogFile="true"/>
+
+    <!-- Add soft delete columns -->
+    <include file="migrations/003_add_soft_delete_columns.sql" relativeToChangelogFile="true"/>
+
+    <!-- Add audit columns (created_by, updated_by, etc) -->
+    <include file="migrations/004_add_audit_columns.sql" relativeToChangelogFile="true"/>
+
+    <!-- Add projects table -->
+    <include file="migrations/005_add_projects_table.sql" relativeToChangelogFile="true"/>
+
+    <!-- Add performance indexes -->
+    <include file="migrations/006_add_indexes.sql" relativeToChangelogFile="true"/>
+
+</databaseChangeLog>
+

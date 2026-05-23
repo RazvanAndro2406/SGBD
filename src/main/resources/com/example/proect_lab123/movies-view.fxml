@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" alignment="CENTER" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.proect_lab123.controller.MovieController" prefWidth="600" prefHeight="400">
+
+    <Label text="Movie Catalog" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+    <TableView fx:id="tableViewMovies" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="columnTitle" text="Title" prefWidth="250"/>
+            <TableColumn fx:id="columnGenre" text="Genre" prefWidth="150"/>
+            <TableColumn fx:id="columnDuration" text="Duration (min)" prefWidth="150"/>
+        </columns>
+    </TableView>
+
+    <Label text="Click on a row to see the cast" style="-fx-text-fill: gray;"/>
+</VBox>

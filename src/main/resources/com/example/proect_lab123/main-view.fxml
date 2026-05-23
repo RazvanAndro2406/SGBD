@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="10" alignment="CENTER" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.proect_lab123.controller.MainController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+
+    <Label text="Actor Management System" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+    <TableView fx:id="tableActors" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
+            <TableColumn fx:id="colName" text="Name" prefWidth="150"/>
+            <TableColumn fx:id="colBirthday" text="Birthday" prefWidth="100"/>
+            <TableColumn fx:id="colIdm" text="Movie ID" prefWidth="70"/>
+        </columns>
+    </TableView>
+
+    <GridPane hgap="10" vgap="10">
+        <TextField fx:id="txtName" promptText="Name" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <DatePicker fx:id="dpBirthday" promptText="Birthday" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+        <TextField fx:id="txtIdm" promptText="Movie ID" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+    </GridPane>
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Add" onAction="#onAddActor" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+        <Button text="Update" onAction="#onUpdateActor" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+        <Button text="Delete" onAction="#onDeleteActor" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+        <Separator orientation="VERTICAL"/>
+        <Button text="Manage Movies ->" onAction="#onOpenMovies" style="-fx-font-weight: bold;"/>
+        <Button text="Transaction Lab (PostgreSQL)" onAction="#onOpenTransactionLab" style="-fx-font-weight: bold;"/>
+    </HBox>
+</VBox>
