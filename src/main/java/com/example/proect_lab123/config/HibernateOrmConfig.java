@@ -9,19 +9,23 @@ import java.util.Properties;
 
 /**
  * Hibernate ORM configuration factory using JdbcUtils-style Properties pattern.
- * Creates SessionFactory instances for ORM operations.
+ * Creates and manages SessionFactory instances for ORM operations.
  */
 public class HibernateOrmConfig {
     private static final Logger logger = LogManager.getLogger(HibernateOrmConfig.class);
 
+    // Păstrăm o referință statică globală pentru a o putea închide corect la final
+    private static SessionFactory sessionFactory;
+
     /**
-     * Create SessionFactory from Properties object (similar to JdbcUtils pattern)
-     * Properties should contain:
-     * - db.url: JDBC connection URL
-     * - db.username: Database username
-     * - db.password: Database password
+     * Create or retrieve SessionFactory from Properties object
      */
     public static SessionFactory createSessionFactory(Properties props) {
+        // Dacă a fost deja creată, o returnăm pe cea existentă (Singleton pattern)
+        if (sessionFactory != null && !sessionFactory.isClosed()) {
+            return sessionFactory;
+        }
+
         String databaseUrl = props.getProperty("db.url");
         String username = props.getProperty("db.username");
         String password = props.getProperty("db.password");
@@ -36,11 +40,14 @@ public class HibernateOrmConfig {
         hibernateConfig.setProperty("hibernate.connection.password", password);
         hibernateConfig.setProperty("hibernate.dialect", getDialect(databaseUrl));
         hibernateConfig.setProperty("hibernate.current_session_context_class", "thread");
-        hibernateConfig.setProperty("hibernate.show_sql", "false");
+        hibernateConfig.setProperty("hibernate.show_sql", "true");
         hibernateConfig.setProperty("hibernate.format_sql", "true");
         hibernateConfig.setProperty("hibernate.hbm2ddl.auto", "validate");
+
+        //pt lab4 MainBulkUpdate
         hibernateConfig.setProperty("hibernate.jdbc.batch_size", "20");
         hibernateConfig.setProperty("hibernate.jdbc.fetch_size", "50");
+
         hibernateConfig.setProperty("hibernate.bytecode.provider", "bytebuddy");
         hibernateConfig.setProperty("hibernate.bytecode.use_reflection_optimizer", "false");
         hibernateConfig.setProperty("hibernate.use_reflection_optimizer", "false");
@@ -48,12 +55,32 @@ public class HibernateOrmConfig {
         // Register entity classes with ORM annotations
         hibernateConfig.addAnnotatedClass(com.example.proect_lab123.domain.Actor.class);
         hibernateConfig.addAnnotatedClass(com.example.proect_lab123.domain.Movie.class);
-        //hibernateConfig.addAnnotatedClass(com.example.proect_lab123.domain.Project.class);
-        logger.info("Registered entities: Actor, Movie, Project");
+        hibernateConfig.addAnnotatedClass(com.example.proect_lab123.domain.Employee.class);
 
-        SessionFactory sessionFactory = hibernateConfig.buildSessionFactory();
+        logger.info("Registered entities: Actor, Movie, Employee");
+
+        sessionFactory = hibernateConfig.buildSessionFactory();
         logger.info("Hibernate SessionFactory created successfully");
         return sessionFactory;
+    }
+
+    public static SessionFactory getSessionFactory(Properties props) {
+        return createSessionFactory(props);
+    }
+
+    /**
+     * Metodă adăugată pentru a elibera conexiunile și resursele în siguranță la finalul rulării programului
+     */
+    public static void shutdown() {
+        if (sessionFactory != null && !sessionFactory.isClosed()) {
+            logger.info("Închidem Hibernate SessionFactory și eliberăm conexiunile bazei de date...");
+            try {
+                sessionFactory.close();
+                logger.info("Hibernate SessionFactory a fost închis cu succes.");
+            } catch (Exception e) {
+                logger.error("Eroare la închiderea SessionFactory-ului Hibernate", e);
+            }
+        }
     }
 
     /**
@@ -80,4 +107,3 @@ public class HibernateOrmConfig {
         throw new IllegalArgumentException("Unsupported database URL: " + url);
     }
 }
-

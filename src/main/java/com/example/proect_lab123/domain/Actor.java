@@ -22,6 +22,20 @@ public class Actor extends Entity<Long> {
     @Column(name = "idm", columnDefinition = "INTEGER")
     private Long idm;
 
+    //pt lab4
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idm", referencedColumnName = "idm", insertable = false, updatable = false)
+
+    private Movie movie;
+
+    public Movie getMovie() {
+        return movie;
+    }
+
+    public void setMovie(Movie movie) {
+        this.movie = movie;
+    }
+
 
     public Actor() {
         super();
