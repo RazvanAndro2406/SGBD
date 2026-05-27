@@ -23,7 +23,7 @@ public class TransactionLabService {
     private static final int BENCHMARK_EXECUTE_BATCH_SIZE = 50;
 
     private static final String CREATE_LAB_SQL = """
-            CREATE TABLE IF NOT EXISTS employees (
+            CREATE TABLE IF NOT EXISTS employees2 (
                 id INT PRIMARY KEY,
                 name VARCHAR(100) NOT NULL,
                 department_id INT NOT NULL,
@@ -39,10 +39,10 @@ public class TransactionLabService {
             """;
 
     private static final String RESET_LAB_SQL = """
-            DELETE FROM employees;
+            DELETE FROM employees2;
             DELETE FROM employees_benchmark;
 
-            INSERT INTO employees (id, name, department_id, salary) VALUES
+            INSERT INTO employees2 (id, name, department_id, salary) VALUES
                 (1, 'Angajat 1', 5, 5000),
                 (2, 'Angajat 2', 5, 5200),
                 (3, 'Angajat 3', 3, 4600)
@@ -526,7 +526,7 @@ public class TransactionLabService {
     }
 
     private void updateSalary(Connection connection, int employeeId, BigDecimal salary) throws SQLException {
-        String sql = "UPDATE employees SET salary = ? WHERE id = ?";
+        String sql = "UPDATE employees2 SET salary = ? WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setBigDecimal(1, salary);
             ps.setInt(2, employeeId);
@@ -535,7 +535,7 @@ public class TransactionLabService {
     }
 
     private BigDecimal readSalary(Connection connection, int employeeId) throws SQLException {
-        String sql = "SELECT salary FROM employees WHERE id = ?";
+        String sql = "SELECT salary FROM employees2 WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, employeeId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -548,7 +548,7 @@ public class TransactionLabService {
     }
 
     private int countDepartment(Connection connection, int departmentId) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM employees WHERE department_id = ?";
+        String sql = "SELECT COUNT(*) FROM employees2 WHERE department_id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, departmentId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -559,7 +559,7 @@ public class TransactionLabService {
     }
 
     private int nextEmployeeId(Connection connection) throws SQLException {
-        String sql = "SELECT COALESCE(MAX(id), 0) + 1 FROM employees";
+        String sql = "SELECT COALESCE(MAX(id), 0) + 1 FROM employees2";
         try (PreparedStatement ps = connection.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             rs.next();
@@ -568,7 +568,7 @@ public class TransactionLabService {
     }
 
     private void insertEmployee(Connection connection, int id, String name, int departmentId, BigDecimal salary) throws SQLException {
-        String sql = "INSERT INTO employees (id, name, department_id, salary) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO employees2 (id, name, department_id, salary) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
             ps.setString(2, name);
@@ -579,7 +579,7 @@ public class TransactionLabService {
     }
 
     public void logFinalState(Consumer<String> log) {
-        String sql = "SELECT id, name, department_id, salary FROM employees ORDER BY id";
+        String sql = "SELECT id, name, department_id, salary FROM employees2 ORDER BY id";
         log.accept("[FINAL] Starea tabelei employees:");
         try (Connection conn = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = conn.prepareStatement(sql);

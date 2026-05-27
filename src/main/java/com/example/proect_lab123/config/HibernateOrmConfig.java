@@ -42,7 +42,8 @@ public class HibernateOrmConfig {
         hibernateConfig.setProperty("hibernate.current_session_context_class", "thread");
         hibernateConfig.setProperty("hibernate.show_sql", "true");
         hibernateConfig.setProperty("hibernate.format_sql", "true");
-        hibernateConfig.setProperty("hibernate.hbm2ddl.auto", "validate");
+        //hibernateConfig.setProperty("hibernate.hbm2ddl.auto", "validate");
+        hibernateConfig.setProperty("hibernate.hbm2ddl.auto", props.getProperty("hibernate.hbm2ddl.auto", "update"));
 
         //pt lab4 MainBulkUpdate
         hibernateConfig.setProperty("hibernate.jdbc.batch_size", "20");
@@ -53,11 +54,30 @@ public class HibernateOrmConfig {
         hibernateConfig.setProperty("hibernate.use_reflection_optimizer", "false");
 
         // Register entity classes with ORM annotations
-        hibernateConfig.addAnnotatedClass(com.example.proect_lab123.domain.Actor.class);
-        hibernateConfig.addAnnotatedClass(com.example.proect_lab123.domain.Movie.class);
-        hibernateConfig.addAnnotatedClass(com.example.proect_lab123.domain.Employee.class);
+//        hibernateConfig.addAnnotatedClass(com.example.proect_lab123.domain.Actor.class);
+//        hibernateConfig.addAnnotatedClass(com.example.proect_lab123.domain.Movie.class);
+//        hibernateConfig.addAnnotatedClass(com.example.proect_lab123.domain.Employee.class);
+//        hibernateConfig.addAnnotatedClass(com.example.proect_lab123.domain.Project.class);
+//        hibernateConfig.addAnnotatedClass(com.example.proect_lab123.domain.Department.class);
+//        hibernateConfig.addAnnotatedClass(com.example.proect_lab123.domain.Employee2.class);
 
-        logger.info("Registered entities: Actor, Movie, Employee");
+        boolean isPostgres = databaseUrl != null && databaseUrl.contains("postgresql");
+
+        if (isPostgres) {
+            // Dacă suntem pe PostgreSQL (Laboratorul de tranzacții), încărcăm DOAR Employee2
+            hibernateConfig.addAnnotatedClass(com.example.proect_lab123.domain.Employee2.class);
+            logger.info("Mod Tranzactii (Postgres) - Am inregistrat doar entitatea Employee2");
+        } else {
+            // Dacă suntem pe SQLite (Laboratoarele normale), încărcăm restul claselor
+            hibernateConfig.addAnnotatedClass(com.example.proect_lab123.domain.Actor.class);
+            hibernateConfig.addAnnotatedClass(com.example.proect_lab123.domain.Movie.class);
+            hibernateConfig.addAnnotatedClass(com.example.proect_lab123.domain.Employee.class);
+            hibernateConfig.addAnnotatedClass(com.example.proect_lab123.domain.Project.class);
+            hibernateConfig.addAnnotatedClass(com.example.proect_lab123.domain.Department.class);
+            logger.info("Mod Normal (SQLite) - Am inregistrat entitatile standard");
+        }
+
+        logger.info("Registered entities: Actor, Movie, Employee, Project,Department");
 
         sessionFactory = hibernateConfig.buildSessionFactory();
         logger.info("Hibernate SessionFactory created successfully");

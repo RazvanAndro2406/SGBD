@@ -1,15 +1,62 @@
 package com.example.proect_lab123.domain;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.SQLRestriction;
+
+import java.time.LocalDateTime;
 
 @jakarta.persistence.Entity
 @Table(name = "employees")
+@SQLRestriction("is_deleted = false") //asta e versiunea mai noua a lui @Where(clause = "is_deleted = false")
 public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", columnDefinition = "INTEGER")
     private Long id;
+
+    @Version
+    @Column(name = "version")
+    private Integer version;
+
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted = false;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
+    @Column(name = "deleted_by")
+    private String deletedBy;
+
+    // Metodă helper pentru ștergere soft
+    public void softDelete(String username) {
+        this.isDeleted = true;
+        this.deletedAt = LocalDateTime.now();
+        this.deletedBy = username;
+    }
+
+    // Metodă helper pentru restaurare
+    public void restore() {
+        this.isDeleted = false;
+        this.deletedAt = null;
+        this.deletedBy = null;
+    }
+
+    // Getters și Setters pentru noile câmpuri
+    public Boolean getIsDeleted() { return isDeleted; }
+    public void setIsDeleted(Boolean isDeleted) { this.isDeleted = isDeleted; }
+    public LocalDateTime getDeletedAt() { return deletedAt; }
+    public void setDeletedAt(LocalDateTime deletedAt) { this.deletedAt = deletedAt; }
+    public String getDeletedBy() { return deletedBy; }
+    public void setDeletedBy(String deletedBy) { this.deletedBy = deletedBy; }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
 
     @Column(name = "first_name")
     private String firstName;
@@ -26,6 +73,28 @@ public class Employee {
     @Column(name = "salary")
     private Double salary;
 
+    @Column(name = "phone")
+    private String phone;
+
+    public Employee(Long id, String firstName, String lastName, String email, Integer departmentId, Double salary, String phone) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.departmentId = departmentId;
+        this.salary = salary;
+        this.phone = phone;
+    }
+
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     // --- Constructori ---
     public Employee() {
     }
@@ -39,6 +108,11 @@ public class Employee {
     }
 
     // --- Getters și Setters ---
+
+
+
+
+
     public Long getId() {
         return id;
     }

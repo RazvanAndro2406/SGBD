@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS employees (
+CREATE TABLE IF NOT EXISTS employees2 (
     id INT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     department_id INT NOT NULL,
